@@ -17,14 +17,17 @@ void Server::prepare()
     }
 
     connect(server, SIGNAL(newConnection()), this , SLOT(clientConnected()));
+
+    qDebug() << "Server is ready";
 }
 
 void Server::clientConnected()
 {
-    qDebug() << "Client connected";
+    qDebug() << "Server received Client";
     while(QTcpSocket *client = server->nextPendingConnection())
     {
-        QByteArray ba("Hello");
+        QByteArray ba("Hello world");
         qDebug() << "Server sended bytes" << client->write(ba);
+        client->flush();
     }
 }

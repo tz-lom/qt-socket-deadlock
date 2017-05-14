@@ -11,6 +11,11 @@ void Client::readFromSocket(std::size_t size, char *memory)
     qint64 offset = 0;
     while(offset<(qint64)size)
     {
+        qDebug() << ".";
+        if(socket->state() != QTcpSocket::ConnectedState)
+        {
+            qDebug() << "Bad client socket state:" << socket->state();
+        }
         if(socket->bytesAvailable()==0) socket->waitForReadyRead(500);
         qint64 o = socket->read(memory+offset, size-offset);
         if(o<0)
@@ -32,8 +37,9 @@ void Client::openSocket()
         return;
     }
 
+    qDebug() << "Client connected, waiting header";
 
-    QByteArray ba(6,'@');
+    QByteArray ba(5,'@');
     readFromSocket(ba.size(), ba.data());
     qDebug() << "Received header" << ba;
 }
